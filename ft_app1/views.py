@@ -8,11 +8,30 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required
 def home(request):
-    return render(request,'ft_app1/home.html')
+    test_display = Income.objects.filter(author=request.user)
+    context = {
+        'test_display': test_display
+    }
+    totinc=0
+    for ilt in test_display:
+        totinc=totinc+ilt.amt
+    test_display2 = Expense.objects.filter(autor=request.user)
+    context2={
+        'test_display2':test_display2
+    }
+    totexp=0
+    for ilt in test_display2:
+        totexp=totexp+ilt.amnt
+    sev=totinc-totexp
+    return render(request,'ft_app1/home.html',{'inc':totinc,'exp':totexp,'sav':sev})
 
 @login_required
 def link(request):
     return render(request,'ft_app1/link.html')
+
+@login_required
+def linkview(request):
+    return render(request,'ft_app1/link_view.html')
 
 @login_required
 def bar(request):
@@ -30,12 +49,12 @@ def addinc(request):
     return render(request,'ft_app1/add_income.html')
 
 @login_required
-def viewinc(request):
+def viewinc(request):   
     usser=request.user
-    icome = {
+    inco = {
         'inci':Income.objects.all()
         }
-    return render(request,'ft_app1/view_income.html',icome)
+    return render(request,'ft_app1/view_income.html',inco)
 
 @login_required
 def viewexp(request):
